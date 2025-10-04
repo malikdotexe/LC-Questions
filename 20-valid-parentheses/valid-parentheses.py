@@ -15,4 +15,4 @@ class Solution:
             else:
                 stack.append(c)
         
-        return True if stack==[] else False
+        return not stack
