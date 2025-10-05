@@ -45,15 +45,31 @@ def get_latest_folder(base="."):
         f for f in Path(base).iterdir()
         if f.is_dir() and f.name not in excluded_dirs
     ]
-    # Keep only folders containing at least one Python file
-    folders = [f for f in folders if any(f.glob("*.py"))]
 
     if not folders:
-        raise FileNotFoundError("No valid problem folder with a .py file found.")
+        raise FileNotFoundError("No valid problem folder found.")
 
-    # Sort by modification time, then by name as tiebreaker
-    return max(folders, key=lambda p: (p.stat().st_mtime, p.name))
+    # Track the latest .py file among all folders
+    latest_file = None
+    latest_time = 0
+    latest_folder = None
 
+    for folder in folders:
+        py_files = list(folder.glob("*.py"))
+        if not py_files:
+            continue
+        for f in py_files:
+            mod_time = f.stat().st_mtime
+            if mod_time > latest_time:
+                latest_time = mod_time
+                latest_file = f
+                latest_folder = folder
+
+    if not latest_folder:
+        raise FileNotFoundError("No Python files found in any folder.")
+
+    print(f"🕒 Most recently updated file: {latest_file.name} ({latest_folder.name})")
+    return latest_folder
 
 # =====================================================
 # 3️⃣  TWEET GENERATION VIA POLLINATIONS
