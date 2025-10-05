@@ -139,11 +139,16 @@ def generate_carbon_image(code_path, output_dir="./images"):
         "--output", str(Path(output_dir).resolve())
     ], check=True)
 
-    files = list(Path(output_dir).glob("*.png"))
+    # ✅ search both in output_dir and repo root (fallback)
+    files = list(Path(output_dir).glob("*.png")) + list(Path(".").glob("*.png"))
+
     if not files:
         raise FileNotFoundError("No carbon image generated.")
 
-    return max(files, key=lambda p: p.stat().st_mtime)
+    latest_image = max(files, key=lambda p: p.stat().st_mtime)
+    print(f"🖼️ Found generated image: {latest_image}")
+    return latest_image
+
 
 
 # =====================================================
