@@ -2,8 +2,8 @@ name: AutoTweet LeetCode Updates
 
 on:
   push:
-    branches: [ main ]
-
+    paths:
+      - "**/*.py"
 jobs:
   tweet:
     runs-on: ubuntu-latest
