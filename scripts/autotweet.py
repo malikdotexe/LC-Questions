@@ -38,38 +38,42 @@ except Exception as e:
 # =====================================================
 # 2️⃣  FOLDER + FILE DETECTION
 # =====================================================
+import subprocess
+from pathlib import Path
+
 def get_latest_folder(base="."):
     excluded_dirs = {".git", ".github", "scripts", "images"}
 
-    folders = [
-        f for f in Path(base).iterdir()
-        if f.is_dir() and f.name not in excluded_dirs
-    ]
-
-    if not folders:
-        raise FileNotFoundError("No valid problem folder found.")
-
-    # Track the latest .py file among all folders
-    latest_file = None
-    latest_time = 0
-    latest_folder = None
-
-    for folder in folders:
-        py_files = list(folder.glob("*.py"))
+    # Get the most recently committed .py file from git history
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--pretty=format:%H", "--name-only", "--", "*.py"],
+            cwd=base,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        output = result.stdout.strip().splitlines()
+        if not output:
+            raise FileNotFoundError("No committed .py files found.")
+        
+        # The last line(s) after commit hash are the files
+        py_files = [line.strip() for line in output if line.strip().endswith(".py")]
         if not py_files:
-            continue
-        for f in py_files:
-            mod_time = f.stat().st_mtime
-            if mod_time > latest_time:
-                latest_time = mod_time
-                latest_file = f
-                latest_folder = folder
+            raise FileNotFoundError("No Python files found in latest commit.")
 
-    if not latest_folder:
-        raise FileNotFoundError("No Python files found in any folder.")
+        latest_file = Path(py_files[-1])
+        # Find the parent folder for the file
+        for parent in latest_file.parents:
+            if parent.name not in excluded_dirs and parent != Path(base):
+                latest_folder = Path(base) / parent
+                print(f"🕒 Latest committed file: {latest_file} in {latest_folder.name}")
+                return latest_folder
 
-    print(f"🕒 Most recently updated file: {latest_file.name} ({latest_folder.name})")
-    return latest_folder
+        raise FileNotFoundError("No valid folder found for the latest .py commit.")
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Git command failed: {e.stderr}") from e
+
 
 # =====================================================
 # 3️⃣  TWEET GENERATION VIA POLLINATIONS
@@ -78,12 +82,10 @@ def generate_tweet(problem_title):
     prompt = textwrap.dedent(f"""
     Write a short, engaging tweet about solving the LeetCode problem "{problem_title}".
     Follow this structure and tone:
-
     🧠 Solved the Next Permutation problem! ✨  
     📍 Approach: Identify pivot → swap with next greater → reverse suffix  
     💡 Key Idea: Traverse from right, apply in-place changes for O(n) time and O(1) space  
-
-
+        
     Your task:
     - Replace the title, summary line, and steps with the correct logic for "{problem_title}".
     - Explain the approach in 2–3 concise bullet-style lines.
@@ -116,6 +118,7 @@ def generate_tweet(problem_title):
     
     # Ensure tweet is within 280 chars
     tweet = tweet[:280]
+    return tweet
 
 
 # =====================================================
