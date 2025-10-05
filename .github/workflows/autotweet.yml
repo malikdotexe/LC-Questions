@@ -9,24 +9,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node (for Carbon)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
+      # -----------------------------------
+      # 🐍 Setup Python + Cache pip packages
+      # -----------------------------------
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies
         run: |
           pip install requests tweepy
-          npm install -g carbon-now-cli
 
+      # -----------------------------------
+      # 🟢 Setup Node + Cache npm packages
+      # -----------------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install carbon-now-cli
+        run: npm install -g carbon-now-cli
+
+      # -----------------------------------
+      # 🧠 Run your tweet automation
+      # -----------------------------------
       - name: Generate and Post Tweet
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
