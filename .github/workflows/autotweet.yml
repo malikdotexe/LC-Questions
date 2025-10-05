@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "**/*.py"
+
 jobs:
   tweet:
     runs-on: ubuntu-latest
@@ -44,12 +45,18 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-carbon-now-cli-v1
           restore-keys: |
             ${{ runner.os }}-npm-
 
-      - name: Install carbon-now-cli
-        run: npm install -g carbon-now-cli
+      - name: Install carbon-now-cli (cached)
+        run: |
+          if ! command -v carbon-now >/dev/null; then
+            echo "Installing carbon-now-cli..."
+            npm install -g carbon-now-cli
+          else
+            echo "✅ carbon-now-cli already cached."
+          fi
 
       # -----------------------------------
       # 🧠 Run your tweet automation
