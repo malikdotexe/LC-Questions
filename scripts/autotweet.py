@@ -154,6 +154,17 @@ def generate_carbon_image(code_path, output_dir="./images"):
 # =====================================================
 # 5️⃣  POST TWEET (v2 for posting, v1.1 for media)
 # =====================================================
+TWEET_LOG = Path("scripts/tweeted_problems.txt")
+TWEET_LOG.touch(exist_ok=True)
+
+def already_tweeted(problem_name):
+    with open(TWEET_LOG, "r") as f:
+        return problem_name in f.read().splitlines()
+
+def mark_tweeted(problem_name):
+    with open(TWEET_LOG, "a") as f:
+        f.write(problem_name + "\n")
+        
 def post_tweet_with_image(text, image_path=None):
     if not text:
         raise ValueError("Tweet text is missing or empty.")
@@ -182,6 +193,7 @@ def post_tweet_with_image(text, image_path=None):
         print(f"⚠️ Unexpected error while posting tweet: {e}")
 
 
+
 # =====================================================
 # 6️⃣  MAIN EXECUTION
 # =====================================================
@@ -194,10 +206,14 @@ if __name__ == "__main__":
         print("⚠️ No Python solution found in this folder. Exiting.")
         exit(0)
 
+
     code_file = py_files[0]
     slug = "-".join(latest.name.split("-")[1:])
     problem_name = slug.replace("-", " ").title()
     print(f"🧠 Problem detected: {problem_name}")
+    if already_tweeted(problem_name):
+        print(f"🟡 Skipping tweet: {problem_name} already tweeted.")
+        exit(0)
 
     tweet_text = generate_tweet(problem_name)
     print(f"💬 Generated tweet:\n{tweet_text}")
@@ -210,3 +226,5 @@ if __name__ == "__main__":
         image = None
 
     post_tweet_with_image(tweet_text, str(image) if image else None)
+    mark_tweeted(problem_name)
+
