@@ -8,7 +8,7 @@ import urllib.parse
 from pathlib import Path
 
 # =====================================================
-# 1️⃣  TWITTER AUTH (v1.1)
+# 1️⃣  TWITTER AUTH (v1.1 + v2 HYBRID)
 # =====================================================
 required_env = [
     "TWITTER_API_KEY",
@@ -21,6 +21,7 @@ missing = [k for k in required_env if not os.getenv(k)]
 if missing:
     raise EnvironmentError(f"Missing Twitter credentials: {', '.join(missing)}")
 
+# v1.1 (for media upload)
 auth = tweepy.OAuth1UserHandler(
     os.getenv("TWITTER_API_KEY"),
     os.getenv("TWITTER_API_SECRET"),
@@ -28,6 +29,15 @@ auth = tweepy.OAuth1UserHandler(
     os.getenv("TWITTER_ACCESS_SECRET"),
 )
 api = tweepy.API(auth, wait_on_rate_limit=True)
+
+# v2 (for tweeting)
+client = tweepy.Client(
+    consumer_key=os.getenv("TWITTER_API_KEY"),
+    consumer_secret=os.getenv("TWITTER_API_SECRET"),
+    access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+    access_token_secret=os.getenv("TWITTER_ACCESS_SECRET"),
+)
+
 try:
     api.verify_credentials()
     print("✅ Twitter authentication successful.")
@@ -137,19 +147,34 @@ def generate_carbon_image(code_path, output_dir="./images"):
 
 
 # =====================================================
-# 5️⃣  POST TWEET (v1.1 SAFE)
+# 5️⃣  POST TWEET (v2 for posting, v1.1 for media)
 # =====================================================
 def post_tweet_with_image(text, image_path=None):
     if not text:
         raise ValueError("Tweet text is missing or empty.")
 
-    if image_path:
-        media = api.media_upload(image_path)
-        api.update_status(status=text, media_ids=[media.media_id])
-        print("✅ Tweet posted with image (v1.1 API).")
-    else:
-        api.update_status(status=text)
-        print("✅ Tweet posted (text only, v1.1 API).")
+    try:
+        if image_path:
+            # Upload media via v1.1
+            media = api.media_upload(image_path)
+            media_id = media.media_id
+            print(f"🖼️ Uploaded media ID: {media_id}")
+
+            # Post tweet via v2
+            client.create_tweet(text=text, media_ids=[media_id])
+            print("✅ Tweet posted successfully with image (v2 endpoint).")
+        else:
+            client.create_tweet(text=text)
+            print("✅ Tweet posted successfully (text only, v2 endpoint).")
+
+    except tweepy.errors.Forbidden as e:
+        print(f"🚫 Tweet failed due to permission issue: {e}")
+        Path("images").mkdir(exist_ok=True)
+        with open("images/pending_tweet.txt", "w") as f:
+            f.write(text)
+        print("💾 Saved tweet locally for manual posting (Essential tier restriction).")
+    except Exception as e:
+        print(f"⚠️ Unexpected error while posting tweet: {e}")
 
 
 # =====================================================
