@@ -38,42 +38,44 @@ except Exception as e:
 # =====================================================
 # 2️⃣  FOLDER + FILE DETECTION
 # =====================================================
-import subprocess
-from pathlib import Path
-
 def get_latest_folder(base="."):
     excluded_dirs = {".git", ".github", "scripts", "images"}
 
-    # Get the most recently committed .py file from git history
+    # Try git-based detection first
     try:
         result = subprocess.run(
-            ["git", "log", "-1", "--pretty=format:%H", "--name-only", "--", "*.py"],
+            ["git", "log", "-1", "--pretty=format:", "--name-only", "--", "*.py"],
             cwd=base,
             capture_output=True,
             text=True,
             check=True,
         )
-        output = result.stdout.strip().splitlines()
-        if not output:
-            raise FileNotFoundError("No committed .py files found.")
-        
-        # The last line(s) after commit hash are the files
-        py_files = [line.strip() for line in output if line.strip().endswith(".py")]
-        if not py_files:
-            raise FileNotFoundError("No Python files found in latest commit.")
+        files = [line.strip() for line in result.stdout.splitlines() if line.strip().endswith(".py")]
 
-        latest_file = Path(py_files[-1])
-        # Find the parent folder for the file
-        for parent in latest_file.parents:
-            if parent.name not in excluded_dirs and parent != Path(base):
-                latest_folder = Path(base) / parent
-                print(f"🕒 Latest committed file: {latest_file} in {latest_folder.name}")
-                return latest_folder
+        if files:
+            latest_file = Path(files[-1])
+            for parent in latest_file.parents:
+                if parent.name not in excluded_dirs and parent != Path(base):
+                    print(f"🕒 Latest committed file: {latest_file} in {parent.name}")
+                    return parent
+        else:
+            print("⚠️ Git log did not return any .py files; falling back to modification time.")
+    except Exception as e:
+        print(f"⚠️ Git-based detection failed: {e}. Falling back to file timestamps.")
 
-        raise FileNotFoundError("No valid folder found for the latest .py commit.")
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Git command failed: {e.stderr}") from e
+    # Fallback: filesystem-based detection
+    folders = [
+        f for f in Path(base).iterdir()
+        if f.is_dir() and f.name not in excluded_dirs
+    ]
+    py_files = [f for folder in folders for f in folder.glob("*.py")]
 
+    if not py_files:
+        raise FileNotFoundError("No Python files found in any folder.")
+
+    latest_file = max(py_files, key=lambda f: f.stat().st_mtime)
+    print(f"🕒 Fallback to latest modified file: {latest_file}")
+    return latest_file.parent
 
 # =====================================================
 # 3️⃣  TWEET GENERATION VIA POLLINATIONS
