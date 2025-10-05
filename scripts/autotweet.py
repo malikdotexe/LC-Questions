@@ -64,13 +64,12 @@ def generate_tweet(problem_title):
     Format it exactly like this example:
 
     🧠 Cracked the Next Permutation algorithm! ✨ In-place solution with O(n) complexity  
-    📍 Find pivot → Swap with successor → Reverse suffix  
-    🔗 leetcode.com/problems/next-permutation  
+    📍 Find pivot → Swap with successor → Reverse suffix    
     👨‍💻 #LeetCode #DSA #Algorithms #Python  
 
     Your task:
     - Replace the title, summary line, and use hashtags as they are.
-    - Mention time complexity and key idea in 1–2 bullet-style lines.
+    - Mention time complexity, space complexity and key idea in 2-3 bullet-style lines.
     - Keep it under 280 characters.
     - Do NOT include explanations or extra commentary.
     """)
@@ -114,7 +113,7 @@ def generate_carbon_image(code_path, output_dir="./images"):
         "--output", output_dir
     ], check=True)
 
-    files = list(Path(output_dir).glob("carbon-*.png"))
+    files = list(Path(output_dir).glob("*.png"))
     if not files:
         raise FileNotFoundError("No carbon image generated.")
     return max(files, key=lambda p: p.stat().st_mtime)
@@ -124,12 +123,21 @@ def generate_carbon_image(code_path, output_dir="./images"):
 # 5️⃣  TWEET POSTING
 # =====================================================
 def post_tweet_with_image(text, image_path=None):
+    client = tweepy.Client(
+        consumer_key=os.getenv("TWITTER_API_KEY"),
+        consumer_secret=os.getenv("TWITTER_API_SECRET"),
+        access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+        access_token_secret=os.getenv("TWITTER_ACCESS_SECRET"),
+    )
+
     if image_path:
+        # upload still needs v1.1 API
         media = api.media_upload(image_path)
-        api.update_status(status=text, media_ids=[media.media_id])
+        client.create_tweet(text=text, media_ids=[media.media_id])
     else:
-        api.update_status(status=text)
-    print(f"✅ Tweet posted successfully: {text[:70]}...")
+        client.create_tweet(text=text)
+
+    print(f"✅ Tweet posted successfully via v2 API: {text[:70]}...")
 
 
 # =====================================================
