@@ -148,7 +148,7 @@ def post_tweet_with_image(text, image_path=None):
     else:
         client.create_tweet(text=text)
 
-    print(f"✅ Tweet posted successfully via v2 API: {text[:70]}...")
+    print(f"✅ Tweet posted successfully via v2 API")
 
 
 # =====================================================
