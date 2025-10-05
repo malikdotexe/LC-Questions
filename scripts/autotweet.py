@@ -60,23 +60,25 @@ def get_latest_folder(base="."):
 # =====================================================
 def generate_tweet(problem_title):
     prompt = textwrap.dedent(f"""
-    Write a concise, enthusiastic tweet about solving the LeetCode problem "{problem_title}".
-    Format it exactly like this example:
+    Write a short, engaging tweet about solving the LeetCode problem "{problem_title}".
+    Follow this structure and tone:
 
-    🧠 Cracked the Next Permutation algorithm! ✨ In-place solution with O(n) complexity  
-    📍 Find pivot → Swap with successor → Reverse suffix    
-    👨‍💻 #LeetCode #DSA #Algorithms #Python  
+    🧠 Solved the Next Permutation problem! ✨  
+    📍 Approach: Identify pivot → swap with next greater → reverse suffix  
+    💡 Key Idea: Traverse from right, apply in-place changes for O(n) time and O(1) space  
+
 
     Your task:
-    - Replace the title, summary line, and use hashtags as they are.
-    - Mention time complexity, space complexity and key idea in 2-3 bullet-style lines.
+    - Replace the title, summary line, and steps with the correct logic for "{problem_title}".
+    - Explain the approach in 2–3 concise bullet-style lines.
+    - Mention time and space complexity naturally within the description.
     - Keep it under 280 characters.
-    - Do NOT include explanations or extra commentary.
+    - Maintain an informative, confident tone — not too flashy, not verbose.
     """)
 
     encoded_prompt = urllib.parse.quote(prompt)
     url = f"https://text.pollinations.ai/{encoded_prompt}"
-
+    
     try:
         resp = requests.get(url, timeout=20)
         if resp.status_code != 200:
@@ -87,10 +89,17 @@ def generate_tweet(problem_title):
     except Exception as e:
         print(f"⚠️ Pollinations API failed: {e}")
         tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
-
-    if len(tweet) > 280:
-        tweet = tweet[:277] + "..."
-    return tweet
+    
+    # Append static hashtags (ensure no duplicates and keep within 280 chars)
+    static_tags = " #LeetCode #DSA #Algorithms #Python #100DaysOfCode #InterviewPrep"
+    
+    # Avoid double-hashtag repetition if they already exist in the text
+    for tag in static_tags.split():
+        if tag not in tweet:
+            tweet += f" {tag}"
+    
+    # Ensure tweet is within 280 chars
+    tweet = tweet[:280]
 
 
 # =====================================================
