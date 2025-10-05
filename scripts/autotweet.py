@@ -8,7 +8,7 @@ import urllib.parse
 from pathlib import Path
 
 
-# =====================================================
+# =============================================ð========
 # 1️⃣  TWITTER AUTH SETUP
 # =====================================================
 required_env = [
@@ -105,15 +105,17 @@ def generate_carbon_image(code_path, output_dir="./images"):
         return None
 
     subprocess.run([
-        "carbon-now",
-        str(code_path),
-        "--theme", "nord",
-        "--headless",
-        "--save",
-        "--output", output_dir
+    "carbon-now",
+    str(code_path),
+    "--theme", "nord",
+    "--headless",
+    "--save",
+    "--output", str(Path(output_dir).resolve())
     ], check=True)
 
-    files = list(Path(output_dir).glob("*.png"))
+
+    files = list(Path(output_dir).glob("*.png")) or list(Path(".").glob("*.png"))
+
     if not files:
         raise FileNotFoundError("No carbon image generated.")
     return max(files, key=lambda p: p.stat().st_mtime)
