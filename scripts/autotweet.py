@@ -14,10 +14,22 @@ auth = tweepy.OAuth1UserHandler(
 api = tweepy.API(auth)
 
 def get_latest_folder(base="."):
-    # Get most recently modified problem folder
-    folders = [f for f in Path(base).iterdir() if f.is_dir()]
+    excluded_dirs = {".git", ".github", "scripts", "images"}
+
+    folders = [
+        f for f in Path(base).iterdir()
+        if f.is_dir() and f.name not in excluded_dirs
+    ]
+
+    # Keep only folders that have at least one Python solution
+    folders = [f for f in folders if any(f.glob("*.py"))]
+
+    if not folders:
+        raise FileNotFoundError("No valid problem folder with a .py file found.")
+
     latest = max(folders, key=lambda p: p.stat().st_mtime)
     return latest
+
 
 def generate_tweet(problem_title):
     prompt = textwrap.dedent(f"""
