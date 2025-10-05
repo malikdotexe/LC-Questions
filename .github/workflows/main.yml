@@ -1,0 +1,26 @@
+name: Test Secrets and Trigger
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Print commit info
+        run: |
+          echo "Latest commit by: ${{ github.actor }}"
+          echo "Commit message: ${{ github.event.head_commit.message }}"
+
+      - name: Check that secrets load (masked)
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        run: |
+          echo "API key length: ${#TWITTER_API_KEY}"
+          echo "Access token length: ${#TWITTER_ACCESS_TOKEN}"
+          echo "✅ Secrets loaded and masked successfully."
