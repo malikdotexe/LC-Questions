@@ -18,7 +18,7 @@
 - 2 is underlined in nums2 = [1,3,4,<u>2</u>]. There is no next greater element, so the answer is -1.
 </pre>
 
-<p><strong class="example">Example 2:</strong></p>
+<p><strong class="example">2nd Example:</strong></p>
 
 <pre>
 <strong>Input:</strong> nums1 = [2,4], nums2 = [1,2,3,4]
