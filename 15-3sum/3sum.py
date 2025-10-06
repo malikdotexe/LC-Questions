@@ -17,6 +17,7 @@ class Solution:
                 else:
                     res.append([nums[a],nums[b],nums[c]])
                     b+=1
+                    c-=1
                     while b<c and nums[b]==nums[b-1]:
                         b+=1
         return res
