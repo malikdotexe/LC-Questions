@@ -9,7 +9,6 @@ class Solution:
             if a>0 and nums[a]==nums[a-1]:
                 continue
             while b<c:
-
                 sum = nums[a]+nums[b]+nums[c]
                 if sum>0:
                     c-=1
