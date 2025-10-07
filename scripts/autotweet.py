@@ -101,16 +101,10 @@ def generate_tweet(problem_title):
     encoded_prompt = urllib.parse.quote(prompt)
     url = f"https://text.pollinations.ai/{encoded_prompt}"
 
-    try:
-        resp = requests.get(url, timeout=20)
-        if resp.status_code != 200:
-            raise RuntimeError(f"Pollinations API returned {resp.status_code}")
-        tweet = resp.text.strip()
-        if not tweet:
-            raise ValueError("Empty response from Pollinations API.")
-    except Exception as e:
-        print(f"⚠️ Pollinations API failed: {e}")
-        tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
+
+    resp = requests.get(url)
+    tweet = resp.text.strip()
+    tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
     # Add static hashtags, prevent duplicates
     static_tags = " #LeetCode #DSA #Algorithms #Python #100DaysOfCode #InterviewPrep"
