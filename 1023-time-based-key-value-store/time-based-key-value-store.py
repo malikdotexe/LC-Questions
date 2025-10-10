@@ -13,7 +13,7 @@ class TimeMap:
         l = 0
         values = self.store[key]
         r = len(values)-1
-        ans = None
+        ans = ""
         while l<=r:
             mid = l+(r-l)//2
             data = values[mid]
@@ -23,14 +23,11 @@ class TimeMap:
             #if mid time is smaller than timestamp shift to left part of store
             else:
                 #Update ans value to new found if its bigger than ans
-                ans = data
+                ans = data[0]
                 l = mid+1
            
 
-        if ans: 
-            return ans[0]
-        else:
-            return ""
+        return ans
         
 
 # Your TimeMap object will be instantiated and called as such:
