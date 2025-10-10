@@ -11,27 +11,21 @@ class TimeMap:
     def get(self, key: str, timestamp: int) -> str :
         
         l = 0
-        r = len(self.store[key])-1
+        values = self.store[key]
+        r = len(values)-1
         ans = None
         while l<=r:
             mid = l+(r-l)//2
-            data = self.store[key][mid]
-          
+            data = values[mid]
             #if mid time is bigger than timestamp shift to right part while storing the closest value
             if data[1]>timestamp:
                 r = mid-1
             #if mid time is smaller than timestamp shift to left part of store
-            elif data[1]<timestamp:
-                #Update ans value to new found if its bigger than ans
-                if not ans:
-                    ans = data
-                if ans:
-                    if data[1]>=ans[1]:
-                        ans = data
-                l = mid+1
-            #exact match
             else:
-                return data[0]
+                #Update ans value to new found if its bigger than ans
+                ans = data
+                l = mid+1
+           
 
         if ans: 
             return ans[0]
