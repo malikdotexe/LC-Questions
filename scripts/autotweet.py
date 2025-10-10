@@ -104,7 +104,8 @@ def generate_tweet(problem_title):
 
     resp = requests.get(url)
     tweet = resp.text.strip()
-    tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
+    if not tweet:
+        tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
     # Add static hashtags, prevent duplicates
     static_tags = " #LeetCode #DSA #Algorithms #Python #100DaysOfCode #InterviewPrep"
