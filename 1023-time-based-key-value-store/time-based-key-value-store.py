@@ -17,14 +17,17 @@ class TimeMap:
         while l<=r:
             mid = l+(r-l)//2
             data = values[mid]
-            #if mid time is bigger than timestamp shift to right part while storing the closest value
+            #if mid time is smaller than timestamp shift to left part of store
+            
             if data[1]>timestamp:
                 r = mid-1
-            #if mid time is smaller than timestamp shift to left part of store
+            #if mid time is bigger or equal to timestamp shift to right part while storing the closest value
+            elif data[1]==timestamp:
+                return data[0]
             else:
-                #Update ans value to new found if its bigger than ans
                 ans = data[0]
                 l = mid+1
+                
            
 
         return ans
