@@ -22,8 +22,6 @@ class TimeMap:
             if data[1]>timestamp:
                 r = mid-1
             #if mid time is bigger or equal to timestamp shift to right part while storing the closest value
-            elif data[1]==timestamp:
-                return data[0]
             else:
                 ans = data[0]
                 l = mid+1
