@@ -84,26 +84,42 @@ def get_latest_folder(base="."):
 # =====================================================
 # 3️⃣  GENERATE TWEET USING POLLINATIONS.AI
 # =====================================================
-def generate_tweet(problem_title):
+def generate_tweet(problem_title, code_path):
+    with open(code_path, "r") as f:
+        code_content = f.read().strip()
+
     prompt = textwrap.dedent(f"""
-    Write a short, clear tweet about solving the LeetCode problem "{problem_title}".
-    Include:
-    - A 1-line intro with the problem name.
-    - 2–3 concise lines describing the approach, idea, and complexity.
-    - Keep tone confident and helpful.
-    - Stay under 280 characters.
+    You are a concise technical writer.
+    Write a tweet describing the LeetCode problem "{problem_title}" based on the solution code below.
+
+    Code:
+    ```
+    {code_content}
+    ```
+
+    Requirements:
+    - 1 line intro with the problem name
+    - 2–3 concise lines summarizing the approach used in THIS code
+    - Mention time and space complexity if clear
+    - Confident, helpful tone
+    - Under 280 characters
+
     Example:
-    🧠 Solved the Two Sum problem!  
-    📍 Approach: Hashmap to store complements  
+    🧠 Solved the Two Sum problem!
+    📍 Approach: Hashmap to store complements
     💡 O(n) time, O(n) space for quick lookups
     """)
 
     encoded_prompt = urllib.parse.quote(prompt)
     url = f"https://text.pollinations.ai/{encoded_prompt}"
 
+    try:
+        resp = requests.get(url, timeout=15)
+        tweet = resp.text.strip()
+    except Exception as e:
+        print(f"⚠️ Pollinations request failed: {e}")
+        tweet = ""
 
-    resp = requests.get(url)
-    tweet = resp.text.strip()
     if not tweet:
         tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
@@ -114,6 +130,7 @@ def generate_tweet(problem_title):
             tweet += f" {tag}"
 
     return tweet[:280]
+
 
 
 # =====================================================
@@ -210,7 +227,7 @@ if __name__ == "__main__":
         print(f"🟡 Skipping tweet: {problem_name} already tweeted.")
         exit(0)
 
-    tweet_text = generate_tweet(problem_name)
+    tweet_text = generate_tweet(problem_name, code_file)
     print(f"💬 Generated tweet:\n{tweet_text}")
 
     try:
