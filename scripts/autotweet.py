@@ -124,7 +124,7 @@ def generate_tweet(problem_title, code_path):
         tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
     # Add static hashtags, prevent duplicates
-    static_tags = " #LeetCode #DSA #Algorithms #Python #100DaysOfCode #InterviewPrep"
+    static_tags = " #LeetCode #100DaysOfCode #InterviewPrep"
     for tag in static_tags.split():
         if tag not in tweet:
             tweet += f" {tag}"
@@ -144,11 +144,12 @@ def generate_carbon_image(code_path, output_dir="./images"):
         return None
 
     subprocess.run([
-        "carbon-now", str(code_path),
-        "--theme", "nord",
-        "--headless",
-        "--save",
-        "--output", str(Path(output_dir).resolve())
+    "carbon-now", str(code_path),
+    "--theme", "cobalt",
+    "--headless",
+    "--save",
+    "--bg", "#07DDDD",
+    "--output", str(Path(output_dir).resolve())
     ], check=True)
 
     # ✅ search both in output_dir and repo root (fallback)
