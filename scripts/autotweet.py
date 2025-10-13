@@ -224,9 +224,7 @@ if __name__ == "__main__":
     slug = "-".join(latest.name.split("-")[1:])
     problem_name = slug.replace("-", " ").title()
     print(f"🧠 Problem detected: {problem_name}")
-    if already_tweeted(problem_name):
-        print(f"🟡 Skipping tweet: {problem_name} already tweeted.")
-        exit(0)
+
 
     tweet_text = generate_tweet(problem_name, code_file)
     print(f"💬 Generated tweet:\n{tweet_text}")
