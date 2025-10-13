@@ -124,13 +124,13 @@ def generate_tweet(problem_title, code_path):
         tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
     # Add static hashtags, prevent duplicates
-    static_tags = " #LeetCode #100DaysOfCode #InterviewPrep"
+    static_tags = " #LeetCode #100DaysOfCode"
     for tag in static_tags.split():
         if tag not in tweet:
             tweet += f" {tag}"
     
     # Ensure final tweet <= 280 chars without cutting hashtags
-    max_len = 280
+    max_len = 260
     hashtags = " ".join([tag for tag in static_tags.split() if tag in tweet])
     # Reserve space for hashtags plus a space
     allowed_len = max_len - len(hashtags) - 1
