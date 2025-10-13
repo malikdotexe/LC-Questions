@@ -1,15 +1,12 @@
 class Solution:
-    def removeAnagrams(self, words: List[str]) -> List[str]:    
-        countn = [0]*26
-        for l in words[0]:
-            countn[ord(l)-ord('a')]+=1
-        stack = [countn]
-        res=[words[0]]
+    def removeAnagrams(self, words: List[str]) -> List[str]:
+        stack =[]
+        res = []
         for word in words:
-            countn = [0]*26
-            for l in word:
-                countn[ord(l)-ord('a')]+=1
-            if stack[-1] != countn:
-                stack.append(countn)
+            count = Counter(word)
+            if stack and stack[-1]== count:
+                continue
+            else:
                 res.append(word)
+                stack.append(count)
         return res
