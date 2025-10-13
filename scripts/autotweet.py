@@ -196,13 +196,13 @@ def post_tweet_with_image(text, image_path=None):
             client.create_tweet(text=text)
             print("✅ Tweet posted successfully (text only, v2 endpoint).")
 
- except tweepy.errors.Forbidden as e:
-    try:
-        print("resp:", e.response.text)   # full JSON error from X
-    except Exception:
-        pass
-    print("codes:", getattr(e, "api_codes", None))
-    raise
+    except tweepy.errors.Forbidden as e:
+        try:
+            print("resp:", e.response.text)   # full JSON error from X
+        except Exception:
+            pass
+        print("codes:", getattr(e, "api_codes", None))
+        raise
 
 
 # =====================================================
