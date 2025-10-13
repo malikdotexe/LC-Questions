@@ -1,4 +1,4 @@
-
+from collections import deque
 class Solution:
     def sortVowels(self, s: str) -> str:
         s = list(s)
@@ -12,12 +12,13 @@ class Solution:
         print(vowels)
         
         #update
-        if vowelidx:
-            for key in vowels:
-                while vowels[key]>0:
-                    s[vowelidx[0]] = key
-                    vowelidx.pop(0)
-                    vowels[key]-=1
+        vowelidx = deque(vowelidx)
+ 
+        for key in vowels:
+            while vowels[key]>0:
+                idx =vowelidx.popleft()
+                s[idx] = key
+                vowels[key]-=1
 
 
         s=''.join(s)
