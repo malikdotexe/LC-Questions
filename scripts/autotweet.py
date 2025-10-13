@@ -196,15 +196,13 @@ def post_tweet_with_image(text, image_path=None):
             client.create_tweet(text=text)
             print("✅ Tweet posted successfully (text only, v2 endpoint).")
 
-    except tweepy.errors.Forbidden as e:
-        print(f"🚫 Tweet failed due to permission issue: {e}")
-        Path("images").mkdir(exist_ok=True)
-        with open("images/pending_tweet.txt", "w") as f:
-            f.write(text)
-        print("💾 Saved tweet locally for manual posting (Essential tier restriction).")
-    except Exception as e:
-        print(f"⚠️ Unexpected error while posting tweet: {e}")
-
+ except tweepy.errors.Forbidden as e:
+    try:
+        print("resp:", e.response.text)   # full JSON error from X
+    except Exception:
+        pass
+    print("codes:", getattr(e, "api_codes", None))
+    raise
 
 
 # =====================================================
