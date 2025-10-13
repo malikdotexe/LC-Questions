@@ -1,5 +1,6 @@
 class Solution:
     def removeAnagrams(self, words: List[str]) -> List[str]:    
+        #counter array
         countn = [0]*26
         for l in words[0]:
             countn[ord(l)-ord('a')]+=1
