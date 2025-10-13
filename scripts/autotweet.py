@@ -102,7 +102,7 @@ def generate_tweet(problem_title, code_path):
     - 2–3 concise lines summarizing the approach used in THIS code
     - Mention time and space complexity if clear
     - Confident, helpful tone
-    - Under 280 characters
+    - Under 240 characters
 
     Example:
     🧠 Solved the Two Sum problem!
@@ -128,8 +128,21 @@ def generate_tweet(problem_title, code_path):
     for tag in static_tags.split():
         if tag not in tweet:
             tweet += f" {tag}"
-
-    return tweet[:280]
+    
+    # Ensure final tweet <= 280 chars without cutting hashtags
+    max_len = 280
+    hashtags = " ".join([tag for tag in static_tags.split() if tag in tweet])
+    # Reserve space for hashtags plus a space
+    allowed_len = max_len - len(hashtags) - 1
+    
+    # Truncate only the main tweet text, not the hashtags
+    if len(tweet) > max_len:
+        # Isolate main text by removing hashtags
+        main_text = tweet.replace(hashtags, "").rstrip()
+        main_text = main_text[:allowed_len].rstrip()
+        tweet = f"{main_text} {hashtags}"
+    
+    return tweet
 
 
 
