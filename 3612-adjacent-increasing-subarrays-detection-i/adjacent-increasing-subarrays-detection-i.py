@@ -1,4 +1,3 @@
-from collections import deque
 class Solution:
     def hasIncreasingSubarrays(self, nums: List[int], k: int) -> bool:
         #Edge Cases
