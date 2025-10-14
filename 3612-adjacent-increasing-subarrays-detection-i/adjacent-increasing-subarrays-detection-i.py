@@ -1,8 +1,12 @@
 from collections import deque
 class Solution:
     def hasIncreasingSubarrays(self, nums: List[int], k: int) -> bool:
+        if len(nums)<2:
+            return False
+        if k==1:
+            return True
         #lenarr would contain length of all increasing subarrays
-        lenarr = [1]
+        lenarr = []
         l =1
         for i in range(1,len(nums)):
             if nums[i]>nums[i-1]:
