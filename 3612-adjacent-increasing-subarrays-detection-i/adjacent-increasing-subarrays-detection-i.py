@@ -8,9 +8,9 @@ class Solution:
             if nums[i]>nums[i-1]:
                 l+=1
             if nums[i]<=nums[i-1] or i==len(nums)-1:
-                print(nums[i])
+
                 lenarr.append(l)
-                print(lenarr)
+
                 #if we can make two increasing subarrays from the same subarray each of length k
                 if lenarr[-1]//2>=k:
                     return True
