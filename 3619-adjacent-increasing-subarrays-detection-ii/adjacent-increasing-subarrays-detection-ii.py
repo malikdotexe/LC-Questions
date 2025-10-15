@@ -19,7 +19,6 @@ class Solution:
                 while r<len(nums) and nums[r]>nums[r-1]:
                     r+=1
                     secondlen = r-l
-                
                     #if the firstlen is greater our answer would be length of second sub array
                     if firstlen>=secondlen:
                         ans = max(ans,secondlen)
