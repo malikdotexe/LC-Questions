@@ -102,7 +102,8 @@ def generate_tweet(problem_title, code_path):
     - 2–3 concise lines summarizing the approach used in THIS code
     - Mention time and space complexity if clear
     - Confident, helpful tone
-    - Under 240 characters
+    - Use Emojis so that it looks pretty to the eyes
+    - Under 250 characters
 
     Example:
     🧠 Solved the Two Sum problem!
