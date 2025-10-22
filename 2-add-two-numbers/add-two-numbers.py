@@ -5,27 +5,31 @@
 #         self.next = next
 class Solution:
     def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
-        # Dummy head to simplify the addition logic
-        dummy_head = ListNode()
-        current = dummy_head
+        #creating dummy node for ease
+        dummy = ListNode()
+        #curr for iterating
+        curr = dummy
         carry = 0
-
-        # Loop until both lists are processed and no carry is left
         while l1 or l2 or carry:
-            # Get values from the two lists, defaulting to 0 if the list is exhausted
+            #defaulting to 0 if any number is any digits less than other
             val1 = l1.val if l1 else 0
             val2 = l2.val if l2 else 0
             
-            # Calculate sum and carry
-            total = val1 + val2 + carry
-            carry = total // 10
-            current.next = ListNode(total % 10)
-            current = current.next
             
-            # Move to the next nodes
+            total = val1+val2+carry
+            #We update carry value later as the carry from previous sum is added to the next place
+            carry = total//10
+            
+            curr.next = ListNode(total%10)
+            
+            #updating pointers  
             if l1:
                 l1 = l1.next
             if l2:
-                l2 = l2.next
+                l2 =l2.next 
+            curr = curr.next
 
-        return dummy_head.next
+        return dummy.next
+
+
+
