@@ -8,6 +8,6 @@ class Solution:
             x = -heapq.heappop(maxheap)
             y = -heapq.heappop(maxheap)
             if x!=y:
-                heapq.heappush(maxheap,y-x)
+                heapq.heappush(maxheap,(y-x))
         
-        return abs(maxheap[0]) if maxheap else 0
+        return -maxheap[0] if maxheap else 0
