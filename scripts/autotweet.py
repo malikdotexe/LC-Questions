@@ -84,10 +84,19 @@ def get_latest_folder(base="."):
 # =====================================================
 # 3️⃣  GENERATE TWEET USING POLLINATIONS.AI
 # =====================================================
+from datetime import datetime
+
 def generate_tweet(problem_title, code_path):
+    # Calculate the number of days since October 3rd
+    start_date = datetime(2025, 10, 3)  # Change the year if needed
+    today = datetime.today()
+    day_count = (today - start_date).days
+
+    # Open the code file and read its content
     with open(code_path, "r") as f:
         code_content = f.read().strip()
 
+    # Prepare the prompt for the API
     prompt = textwrap.dedent(f"""
     You are a concise technical writer.
     Write a tweet describing the LeetCode problem "{problem_title}" based on the solution code below.
@@ -111,6 +120,7 @@ def generate_tweet(problem_title, code_path):
     💡 O(n) time, O(n) space for quick lookups
     """)
 
+    # Encode the prompt and send request
     encoded_prompt = urllib.parse.quote(prompt)
     url = f"https://text.pollinations.ai/{encoded_prompt}"
 
@@ -121,17 +131,21 @@ def generate_tweet(problem_title, code_path):
         print(f"⚠️ Pollinations request failed: {e}")
         tweet = ""
 
+    # Default tweet if API request fails
     if not tweet:
         tweet = f"✅ Solved {problem_title}! Another step forward in #LeetCode #DSA #Python 🚀"
 
+    # Add Day {day} of #100daysofcoding at the beginning
+    tweet = f"Day {day_count} of #100daysofcoding: " + tweet
+
     # Add static hashtags, prevent duplicates
-    static_tags = " #LeetCode #100DaysOfCode"
+    static_tags = " #learninpublic"
     for tag in static_tags.split():
         if tag not in tweet:
             tweet += f" {tag}"
     
     # Ensure final tweet <= 280 chars without cutting hashtags
-    max_len = 260
+    max_len = 280
     hashtags = " ".join([tag for tag in static_tags.split() if tag in tweet])
     # Reserve space for hashtags plus a space
     allowed_len = max_len - len(hashtags) - 1
@@ -144,6 +158,7 @@ def generate_tweet(problem_title, code_path):
         tweet = f"{main_text} {hashtags}"
     
     return tweet
+
 
 
 
