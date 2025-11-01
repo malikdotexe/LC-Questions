@@ -1,18 +1,10 @@
 class Solution:
     def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
-        res  = []
-        #monotonic decreasing
+        res = [0]*len(temperatures)
         stack = []
-        n = len(temperatures)
-        for i in range(n-1,-1,-1):
-            while stack and stack[-1][0]<=temperatures[i]:
+        for i,n in enumerate(temperatures):
+            while stack and stack[-1][0]<n:
+                res[stack[-1][1]] = i- stack[-1][1]
                 stack.pop()
-            #No temp found greater than our current temp
-            if not stack:
-                    res.append(0)
-            else:
-                res.append((stack[-1][1]-i))
-            stack.append([temperatures[i],i])
-
-        res.reverse()		
+            stack.append([n,i])
         return res
