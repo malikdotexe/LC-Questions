@@ -11,7 +11,7 @@ class Solution:
         while head and head.val in nums:
             head = head.next
         
-        curr= head
+        curr = head
         #deleting nodes in place
         while curr and curr.next: #as we are accessing curr.next.val
             if curr.next.val in nums:
