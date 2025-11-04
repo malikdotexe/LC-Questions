@@ -11,11 +11,15 @@ class Solution:
             res.append(sum(temp))
         return res
         
-    def topKfrequent(self,nums,k):
+    def topKfrequent(self, nums, k):
         count = Counter(nums)
-        countarr = [[y,x] for x,y in count.items()]
-        heapq.heapify(countarr)
-        while len(countarr)>k:
-            heapq.heappop(countarr)
-        res = [x[1] for x in countarr for _ in range(x[0])]
+        # max heap
+        heap = [(-freq, -num) for num, freq in count.items()]
+        heapq.heapify(heap)
+
+        res = []
+        for _ in range(min(k, len(heap))):
+            freq, num = heapq.heappop(heap)
+            # negating by * with -1
+            res.append((-freq) * (-num))
         return res
