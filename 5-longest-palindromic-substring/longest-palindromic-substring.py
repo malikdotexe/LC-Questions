@@ -1,6 +1,6 @@
 class Solution:
     def longestPalindrome(self, s: str) -> str:
-        
+
         maxpal = s[0]
         for i in range(len(s)):
             #even length
