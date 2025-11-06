@@ -1,25 +1,33 @@
+from collections import Counter
+
 class Solution:
     def permuteUnique(self, nums):
         result = []
         temp = []
-        used = [False] * len(nums)
+
+        # count tells us how many times each number is available to pick
+        count = Counter(nums)
 
         def backtrack():
-            if len(temp) == len(nums) and temp not in result:
+            # if we have used up all the numbers, we formed one complete permutation
+            if len(temp) == len(nums):
                 result.append(temp.copy())
                 return
 
-            for i in range(len(nums)):
-                if used[i]:
-                    continue
+            # try to pick any number that is still left
+            for num in count:
+                # if this number is still available to use
+                if count[num] > 0:
+                    # choose it
+                    temp.append(num)
+                    count[num] -= 1
 
-                used[i] = True
-                temp.append(nums[i])
+                    # go ahead and try to build the rest
+                    backtrack()
 
-                backtrack()
-
-                used[i] = False
-                temp.pop()
+                    # undo the choose step
+                    temp.pop()
+                    count[num] += 1
 
         backtrack()
         return result
