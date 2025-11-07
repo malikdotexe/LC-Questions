@@ -3,20 +3,13 @@ class Solution:
         temp = []
         res = []
         num = [x for x in range(1,n+1)]
-        def dfs(i):
-            #base
+        def dfs(start):
             if len(temp)==k:
                 res.append(temp.copy())
-                return
-            if i == n:
-                return
-            #choices
-            # choice 1
-            temp.append(num[i]) 
-            dfs(i+1)
+            for i in range(start,n+1):
+                temp.append(i)
+                dfs(i+1)
+                temp.pop()
 
-            temp.pop() #backtrack
-            #choice 2
-            dfs(i+1)
-        dfs(0)
+        dfs(1)
         return res
