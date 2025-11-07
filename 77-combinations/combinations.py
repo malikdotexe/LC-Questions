@@ -2,7 +2,6 @@ class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
         temp = []
         res = []
-        num = [x for x in range(1,n+1)]
         def dfs(start):
             if len(temp)==k:
                 res.append(temp.copy())
