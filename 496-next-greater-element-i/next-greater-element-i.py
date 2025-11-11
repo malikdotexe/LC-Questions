@@ -1,17 +1,22 @@
 
 class Solution:
     def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
-        res = [-1]*len(nums1)
-        #Creating an index map
-        idxmap = {x:i for i,x in enumerate(nums1)}
-        
+        ng = {}
         stack = []
-        for n in nums2:
-            while stack and n>stack[-1]:
-                val = stack.pop()
-                res[idxmap[val]] = n
-            if n in nums1:
-                stack.append(n)
+        for i in range(len(nums2)-1,-1,-1):
+            while stack and stack[-1]<nums2[i]:
+                stack.pop()
+            if stack:
+                ng[nums2[i]]=stack[-1]
+            if not stack:
+                ng[nums2[i]]=-1
+            stack.append(nums2[i])
+        res = []
+        print(ng)
+        for num in nums1:
+            res.append(ng[num])
         return res
 
-            
+
+
+
