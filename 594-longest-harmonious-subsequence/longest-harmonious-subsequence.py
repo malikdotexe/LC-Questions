@@ -5,5 +5,5 @@ class Solution:
         for key,value in count.items():
             if key-1 in count:
                 maxlen = max(maxlen,count[key]+count[key-1])
-        print(count)
+        
         return maxlen
