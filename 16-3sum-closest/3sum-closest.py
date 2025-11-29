@@ -19,6 +19,8 @@ class Solution:
                     l+=1
                     while l<r and nums[l]==nums[l-1]:
                         l+=1
-                elif curr>=target:
+                elif curr>target:
                     r-=1
+                else:
+                    return curr
         return ans
