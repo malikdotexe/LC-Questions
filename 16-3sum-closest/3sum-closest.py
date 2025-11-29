@@ -14,7 +14,6 @@ class Solution:
                 if abs(diff)<abs(mindiff):
                     mindiff = diff
                     ans = curr
-
                 if curr<target:
                     l+=1
                 elif curr>target:
