@@ -12,6 +12,7 @@ class Solution:
             else:
                 ps[i] = s1[-1]
                 s1.append(i)
+
         #next smaller array
         ns=[0]*len(heights)
         s2=[]
@@ -24,6 +25,7 @@ class Solution:
             else:
                 ns[i]=s2[-1]
                 s2.append(i) 
+                
         width = [ns[i] - ps[i]-1 for i in range(len(ns))]
         #final calculation
         maxarea= 0
