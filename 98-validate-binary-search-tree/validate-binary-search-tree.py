@@ -3,9 +3,9 @@ class Solution:
         def Valid(left,right,curr):
             if not curr:
                 return True
-            if not (curr.val>left and curr.val<right):
+            if not (curr.val<left and curr.val>right):
                 return False
             
-            return Valid(left, curr.val, curr.left) and Valid(curr.val, right, curr.right)
+            return Valid(curr.val,right,  curr.left) and Valid(left, curr.val, curr.right)
 
-        return Valid(float("-inf"),float("inf"),root)
+        return Valid(float("inf"),float("-inf"),root)
